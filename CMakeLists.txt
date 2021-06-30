@@ -57,10 +57,6 @@ set_target_properties(utils PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 set_target_properties(utils PROPERTIES COMPILE_FLAGS "--expt-relaxed-constexpr")
 target_link_libraries(utils ${CUDA_CUBLAS_LIBRARIES})
 
-
-ADD_EXECUTABLE(Hello main.cpp)
-TARGET_LINK_LIBRARIES(Hello "${TORCH_LIBRARIES}")
-
 ADD_EXECUTABLE(load_model load_model.cpp)
 TARGET_LINK_LIBRARIES(load_model "${TORCH_LIBRARIES}")
 TARGET_LINK_LIBRARIES(load_model "${NVINFER_LIBRARY}")

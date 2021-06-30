@@ -22,7 +22,7 @@ int main(){
     resnet->to(device);
 
 	auto data_loader = torch::data::make_data_loader(
-		torch::data::datasets::MNIST("./data", torch::data::datasets::MNIST::Mode::kTest).map(
+		torch::data::datasets::MNIST("../data", torch::data::datasets::MNIST::Mode::kTest).map(
 			torch::data::transforms::Stack<>()), 1
 	);
 
