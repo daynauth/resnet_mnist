@@ -57,10 +57,10 @@ int main(){
     }
     
     auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
     if(count != 0){
-        std::cout << "Total Time: " << duration.count() << " microseconds" << std::endl;
+        std::cout << "Total Time: " << duration.count() << " milliseconds" << std::endl;
         std::cout << "Accuracy: " << correct/count * 100 << "%" << std::endl;
     }
 

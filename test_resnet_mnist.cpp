@@ -296,38 +296,10 @@ int main(){
         exit(EXIT_FAILURE);
     }
 
-    //get a random image
-    int rand_index = rand() % number_of_images;
-    auto image = std::shared_ptr<float[]>(new float[image_size]);
-    std::transform(dataset[rand_index].get(), dataset[rand_index].get() + image_size, image.get(), [](auto a){return (float)a/255.0;});
-
-
-    
-    for(int i = 0; i < 28; i++){
-        for(int j = 0; j < 28; j++){
-            int index = i * 28 + j;
-            if(image[index] > 0)
-                std::cout << 1;
-            else
-                std::cout << 0;
-        }
-        std::cout << std::endl;
-    }
-
-    
-    std::cout << "LABEL: " << (int)labels[rand_index] << std::endl;
 
     size_t number_of_classes = 10;
-
-    auto resnet = ResnetTRT("resnet.rt");
-    auto output = resnet.infer(image.get());
-    auto softmax = softmax_cpu(output.get(), 10);
-
-    auto pred = std::max_element(softmax.get(), softmax.get() + number_of_classes);
-    auto pred_idx = std::distance(softmax.get(), pred);
-
-    std::cout << "predicted value: " << pred_idx << std::endl;
-
+    auto resnet = ResnetTRT("resnet_fp16.rt");
+    
     float correct = 0.0;
     int iterations = number_of_images;
 
@@ -341,10 +313,10 @@ int main(){
     auto start = std::chrono::high_resolution_clock::now();
 
     for(int i = 0; i < iterations; i++){
-        output = resnet.infer(test_dataset[i].get());
-        softmax = softmax_cpu(output.get(), 10);
-        pred = std::max_element(softmax.get(), softmax.get() + number_of_classes);
-        pred_idx = std::distance(softmax.get(), pred);
+        auto output = resnet.infer(test_dataset[i].get());
+        auto softmax = softmax_cpu(output.get(), 10);
+        auto pred = std::max_element(softmax.get(), softmax.get() + number_of_classes);
+        auto pred_idx = std::distance(softmax.get(), pred);
 
         if((int)pred_idx == (int)labels[i]){
             correct++;
@@ -353,10 +325,10 @@ int main(){
 
 
     auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
     if(iterations > 0){
-        std::cout << "Total Time: " << duration.count() << " microseconds" << std::endl;
+        std::cout << "Total Time: " << duration.count() << " milliseconds" << std::endl;
         std::cout << "accuracy " << (correct/iterations) * 100 << "%" << std::endl;
     }
     

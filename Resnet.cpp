@@ -354,6 +354,12 @@ int main(){
     auto config = builder->createBuilderConfig();
     config->setMaxWorkspaceSize(1 << 20);
 
+    //set floating point 16
+    if(builder->platformHasFastFp16()){
+        config->setFlag(nvinfer1::BuilderFlag::kFP16);
+        config->setFlag(nvinfer1::BuilderFlag::kSTRICT_TYPES);
+    }
+
 
     std::cout << "building engine" << std::endl;
 
@@ -380,9 +386,14 @@ int main(){
     outstream.write(static_cast<const char*>(serializedModel->data()), serializedModel->size());
 
     std::ofstream outfile;
-    outfile.open("resnet.rt", std::ios::binary | std::ios::out);
+    outfile.open("resnet_fp16.rt", std::ios::binary | std::ios::out);
     outfile << outstream.rdbuf();
     outfile.close();
+
+
+    if(builder->platformHasTf32() == true){
+        std::cout << "TF 32 supported" << std::endl;
+    }
 
     for(auto wt : trt_weights){
         if(wt.count > 0)
