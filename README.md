@@ -6,7 +6,7 @@ TensorRT 7+
 Cuda 11.1
 
 
-## Resnet 18 - MNIST Benchmark Comparason
+## Resnet 18 - MNIST Benchmark Comparison
 | Implementation | Time (ms) | Accuracy |
 | --- | ---| ---|
 | Pytorch  |  26424 |   99.4 |
